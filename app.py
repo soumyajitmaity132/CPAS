@@ -22,7 +22,7 @@ def login():
     print("Login attempt with username:", username)
 
     # Simple hardcoded credentials for demonstration
-    if username == 'root' and password == 'password':
+    if username == 'cpas' and password == 'vacobinary':
         session['logged_in'] = True
         print("Session after login:", dict(session))  # Debugging line to check login status
         flash('Login successful!', 'success')
