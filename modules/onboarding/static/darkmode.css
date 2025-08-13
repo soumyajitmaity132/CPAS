@@ -1,0 +1,86 @@
+/* darkmode.css */
+
+body.dark {
+  background-color: #121212;
+  color: #f1f1f1;
+}
+
+/* Header */
+body.dark header {
+  background-color: #1e1e1e;
+  color: #ffffff;
+}
+
+/* Main container */
+body.dark main {
+  background-color: #1c1c1c;
+  color: #f1f1f1;
+}
+
+/* Inputs and form elements */
+body.dark input,
+body.dark select,
+body.dark textarea {
+  background-color: #333;
+  color: #f1f1f1;
+  border-color: #555;
+}
+
+body.dark input::placeholder,
+body.dark textarea::placeholder {
+  color: #cccccc;
+}
+
+/* Buttons */
+body.dark button {
+  background-color: #333;
+  color: #f1f1f1;
+  border: 1px solid #777;
+}
+
+body.dark button:hover {
+  background-color: #444;
+}
+
+/* Status/Back buttons */
+body.dark .status-button,
+body.dark .back-button {
+  background-color: #333 !important;
+  color: #f1f1f1 !important;
+  border: 1px solid #555;
+}
+
+/* Links */
+body.dark a {
+  color: #90caf9;
+}
+
+/* Tables */
+body.dark table {
+  background-color: #1c1c1c;
+  color: #f1f1f1;
+}
+
+body.dark thead {
+  background-color: #2a2a2a;
+}
+
+body.dark tbody tr:hover {
+  background-color: #2c2c2c;
+}
+
+body.dark tr[data-status="pending"] {
+  background-color: #3a3a1a;
+}
+
+body.dark tr[data-status="in-progress"] {
+  background-color: #1a1a3a;
+}
+
+body.dark tr[data-status="complete"] {
+  background-color: #1a3a1a;
+}
+
+body.dark tr[data-status="obsolete"] {
+  background-color: #3a1a1a;
+}

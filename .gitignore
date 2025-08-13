@@ -1,0 +1,11 @@
+venv/
+modules/onboarding/.env
+mvenv/
+modules/onboarding/chats.json
+modules/onboarding/config.py
+config.py
+db_session.py
+db/config.py
+modules/onboarding/calendar.json
+__pycache__/
+*.py[cod]

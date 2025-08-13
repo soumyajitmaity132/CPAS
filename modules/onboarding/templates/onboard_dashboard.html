@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding Dashboard</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --white: #ffffff;
+            --gray-light: #f3f4f6;
+            --gray: #9ca3af;
+            --gray-dark: #4b5563;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--white);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .dashboard-container.loaded {
+            width: 100%;
+            max-width: 600px;
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: popup 0.5s ease-out forwards;
+        }
+
+        @keyframes popup {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dashboard-header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 24px 32px;
+            text-align: center;
+        }
+
+        .dashboard-header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .dashboard-header p {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .dashboard-content {
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .dashboard-button {
+            display: block;
+            padding: 16px;
+            background-color: var(--primary);
+            color: var(--white);
+            text-align: center;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+        }
+
+        .dashboard-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .dashboard-footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .back-link {
+            color: var(--gray-dark);
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-header {
+                padding: 20px 24px;
+            }
+            .dashboard-content {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>Onboarding Dashboard</h1>
+            <p>Select an option to proceed</p>
+        </div>
+        <div class="dashboard-content">
+            <a href="{{ url_for('onboarding.manual_onboarding') }}" class="dashboard-button">Manual Onboarding</a>
+            <a href="{{ url_for('onboarding.auto_onboard') }}" class="dashboard-button">Auto Onboarding</a>
+        </div>
+        <footer class="dashboard-footer">
+            <a href="/main_dashboard" class="back-link">← Back to Portal</a>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.dashboard-container').classList.add('loaded');
+        });
+    </script>
+</body>
+</html>
+

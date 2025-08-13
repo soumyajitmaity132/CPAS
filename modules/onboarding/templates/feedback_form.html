@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Submit Feedback - Vaco Binary Semantics</title>
+<style>
+  /* Basic styles for the form - You should ideally externalize these to a common CSS file */
+  /* For this example, they are included directly */
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #eef5fc;
+    color: #2c3e50;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    background-color: #2a7de1;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+  }
+  header h1 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 2.1rem;
+    color: white;
+    letter-spacing: 1.2px;
+  }
+  main {
+    flex: 1;
+    max-width: 500px;
+    margin: 50px auto 70px;
+    background: white;
+    padding: 40px 48px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  }
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #34495e;
+  }
+  input[type="email"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+  }
+  input[type="email"]:focus,
+  select:focus,
+  textarea:focus {
+    border-color: #2a7de1;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(42, 125, 225, 0.2);
+  }
+  button[type="submit"] {
+    background-color: #28a745; /* Green for submit */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    display: block;
+    width: 100%;
+  }
+  button[type="submit"]:hover {
+    background-color: #218838;
+    transform: translateY(-1px);
+  }
+  button[type="submit"]:active {
+    transform: translateY(0);
+  }
+  button[type="submit"]:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+
+  /* Spinner for loading state */
+  .spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Notification message styling */
+  #notification-message {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+    display: none; /* Hidden by default, shown by JavaScript */
+  }
+
+  /* Back Button */
+    .back-button-container {
+      max-width: 1300px;
+      margin: 20px auto 0;
+      padding: 0 48px;
+      text-align: center; /* <<< ADD THIS LINE */
+    }
+    .back-button {
+      display: inline-block;
+      background-color: #ccc;
+      color: #2c3e50;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+    .back-button:hover {
+      background-color: #bbb;
+    }
+</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='darkmode.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Submit Feedback</h1>
+        <button onclick="toggleDarkMode()" style="
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          z-index: 9999;
+          padding: 10px 14px;
+          border-radius: 6px;
+          border: none;
+          cursor: pointer;
+          background-color: #2a7de1;
+          color: white;
+          font-weight: bold;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        ">
+          🌓 Toggle Dark Mode
+         </button>
+    </header>
+    <div class="back-button-container">
+    <a href="/" class="back-button">
+      ← Back to Portal
+    </a>
+  </div>
+    <main>
+        <div id="notification-message"></div>
+
+        <form action="/submit_feedback" method="post" id="feedbackForm">
+            <label for="feedback_email">Your Email:</label>
+            <input
+                type="email"
+                id="feedback_email"
+                name="feedback_email"
+                placeholder="your.email@example.com"
+                required
+                autocomplete="email"
+                aria-required="true"
+            />
+
+            <label for="feedback_type">Feedback Type:</label>
+            <select id="feedback_type" name="feedback_type" required>
+                <option value="">--Select--</option>
+                <option value="Suggestion">Suggestion</option>
+                <option value="Bug Report">Bug Report</option>
+                <option value="Feature Request">Feature Request</option>
+                <option value="General Inquiry">General Inquiry</option>
+            </select>
+
+            <label for="feedback_description">Description:</label>
+            <textarea
+                id="feedback_description"
+                name="feedback_description"
+                rows="8"
+                placeholder="Please describe your feedback in detail..."
+                required
+                aria-required="true"
+            ></textarea>
+
+            <button type="submit" id="feedbackBtn" aria-live="polite" aria-busy="false">
+                Send Feedback
+            </button>
+        </form>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const feedbackForm = document.getElementById('feedbackForm');
+            const feedbackBtn = document.getElementById('feedbackBtn');
+            const notificationDiv = document.getElementById('notification-message');
+
+            if (feedbackForm) {
+                feedbackForm.addEventListener('submit', function(event) {
+                    feedbackBtn.disabled = true;
+                    feedbackBtn.setAttribute('aria-busy', 'true');
+                    feedbackBtn.innerHTML = 'Sending... <span class="spinner" aria-hidden="true"></span>';
+                    notificationDiv.textContent = ''; // Clear previous messages
+                    notificationDiv.style.display = 'none';
+                });
+            }
+
+            // Display feedback messages from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const feedbackStatus = urlParams.get('feedback');
+
+            if (feedbackStatus) {
+                let message = '';
+                let color = '';
+                if (feedbackStatus === 'success') {
+                    message = 'Thank you for your feedback! It has been submitted.';
+                    color = '#1a7f37'; // Green
+                } else if (feedbackStatus === 'error') {
+                    message = 'Failed to submit feedback. Please try again or contact support.';
+                    color = '#b93a3a'; // Red
+                }
+
+                if (message) {
+                    notificationDiv.textContent = message;
+                    notificationDiv.style.cssText = `
+                        margin-bottom: 20px;
+                        padding: 15px;
+                        border-radius: 8px;
+                        background-color: ${color}20; /* Light background */
+                        border: 1px solid ${color};
+                        color: ${color};
+                        text-align: center;
+                        font-weight: bold;
+                        display: block;
+                    `;
+                    // Remove the message after a few seconds
+                    setTimeout(() => {
+                        notificationDiv.style.display = 'none';
+                        notificationDiv.textContent = '';
+                        // Clean up URL to remove the feedback param
+                        const newUrl = new URL(window.location.href);
+                        newUrl.searchParams.delete('feedback');
+                        window.history.replaceState({}, document.title, newUrl.toString());
+                    }, 5000); // Message disappears after 5 seconds
+                }
+            }
+        });
+    </script>
+<script src="{{ url_for('static', filename='darkmode.js') }}"></script>
+</body>
+</html>

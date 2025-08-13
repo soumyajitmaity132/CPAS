@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Vaco Binary Semantics - New Employee Onboarding</title>
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #eef5fc;
+    color: #2c3e50;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background-color: #2a7de1;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 3px 8px rgb(0 0 0 / 0.12);
+  }
+  header h1 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 2.1rem;
+    color: white;
+    letter-spacing: 1.2px;
+  }
+
+  main {
+    flex: 1;
+    max-width: 500px;
+    margin: 50px auto 70px;
+    background: white;
+    padding: 40px 48px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    text-align: center;
+    color: #2a7de1;
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Spacing between form elements */
+  }
+
+  label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #34495e;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="date"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #555;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="date"]:focus {
+    border-color: #2a7de1;
+    box-shadow: 0 0 0 3px rgba(42, 125, 225, 0.2);
+    outline: none;
+  }
+
+  button {
+    background-color: #2a7de1;
+    color: white;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 20px;
+  }
+
+  button:hover:not(:disabled) {
+    background-color: #216bbd;
+    transform: translateY(-2px);
+  }
+
+  button:disabled {
+    background-color: #9ac2ed;
+    cursor: not-allowed;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 40px 0;
+  }
+
+  .status-button {
+    background-color: #f0f0f0;
+    color: #2a7de1;
+    padding: 12px 20px;
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    text-decoration: none; /* For link-like behavior */
+    display: block;
+    margin-top: 10px;
+  }
+
+  .status-button:hover {
+    background-color: #e0e0e0;
+  }
+
+  .spinner {
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    width: 1em;
+    height: 1em;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 5px;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Flash message styling */
+  .flashes {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+  }
+  .flashes li {
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    font-weight: 500;
+    color: white;
+  }
+  .flashes .success {
+    background-color: #28a745; /* Green */
+  }
+  .flashes .info {
+    background-color: #17a2b8; /* Blue-green */
+  }
+  .flashes .warning {
+    background-color: #ffc107; /* Orange */
+    color: #333; /* Darker text for contrast */
+  }
+  .flashes .danger {
+    background-color: #dc3545; /* Red */
+  }
+
+  /* Styling for the new portal buttons */
+  .portal-buttons {
+    display: flex;
+    justify-content: center; /* Center the buttons */
+    gap: 20px; /* Space between buttons */
+    margin-top: 40px; /* Space from the content above */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  }
+
+  .portal-buttons .status-button {
+      flex: none; /* Do not grow or shrink */
+      width: auto; /* Allow button to size to content */
+      min-width: 180px; /* Minimum width for consistency */
+      padding: 15px 30px; /* More padding for larger buttons */
+      font-size: 1.15rem; /* Slightly larger font */
+      background-color: #007bff; /* A distinct color for portals */
+      color: white;
+      border: none; /* Remove border if it was inherited */
+  }
+
+  .portal-buttons .status-button:hover {
+      background-color: #0056b3; /* Darker blue on hover */
+  }
+
+  .feedback-button {
+    background-color: #28a745; /* Green */
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.15rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+.feedback-button:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='darkmode.css') }}">
+</head>
+<body>
+<header>
+  <h1>New Employee Onboarding Portal</h1>
+  <button onclick="toggleDarkMode()" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background-color: #2a7de1;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+">
+  🌓 Toggle Dark Mode
+  </button>
+
+</header>
+
+<main>
+  <h2>Initiate New Onboarding Request</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul class="flashes">
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <form action="{{ url_for('onboarding.admin_onboarding') }}" method="POST">
+    <label for="first_name">First Name:</label>
+    <input type="text" id="first_name" name="first_name" required />
+
+    <label for="last_name">Last Name:</label>
+    <input type="text" id="last_name" name="last_name" required />
+
+    <label for="job_title">Job Title:</label>
+    <input type="text" id="job_title" name="job_title" required />
+
+    <label for="tentative_start_date">Tentative Start Date:</label>
+    <input type="date" id="tentative_start_date" name="tentative_start_date" required />
+
+    <label for="shift">Shift (S1/S2/S3):</label>
+    <input type="text" id="shift" name="shift" />
+
+    <label for="location">Location:</label>
+    <input type="text" id="location" name="location" />
+
+    <label for="employee_personal_email">Employee Personal Email:</label>
+    <input
+      type="email"
+      id="employee_personal_email"
+      name="employee_personal_email"
+      placeholder="employee.personal@example.com"
+      required
+    />
+
+    <label for="employee_company_email">Employee Company Email (if known):</label>
+    <input
+      type="email"
+      id="employee_company_email"
+      name="employee_company_email"
+      placeholder="employee.company@yourcompany.com"
+    />
+
+    <label for="laptop_id">Laptop ID (Optional):</label>
+    <input type="text" id="laptop_id" name="laptop_id" />
+
+    <label for="asset_tag">Asset Tag (Optional):</label>
+    <input type="text" id="asset_tag" name="asset_tag" />
+
+    <label for="manager_vaco_id">Manager Vaco ID (Optional):</label>
+    <input type="text" id="manager_vaco_id" name="manager_vaco_id" />
+
+    <label for="manager_email">Manager Email:</label>
+    <input
+      type="email"
+      id="manager_email"
+      name="manager_email"
+      placeholder="manager@example.com"
+      required
+    />
+
+    <label for="project_name">Project Name (Optional):</label>
+    <input type="text" id="project_name" name="project_name" />
+
+    <label for="hr_poc">HR POC (Optional):</label>
+    <input type="text" id="hr_poc" name="hr_poc" />
+
+    <button type="submit" id="onboardBtn" aria-live="polite" aria-busy="false">
+      Submit for Manager Approval
+    </button>
+  </form>
+  <hr>
+  <h2>Bulk Onboarding Upload</h2>
+  <p>
+    For bulk uploads, please use our
+    <a href="bulk_upload_doc" target="_blank" rel="noopener noreferrer">Google Sheets Template</a>.
+  </p>
+  <form action="/upload_csv" method="post" enctype="multipart/form-data">
+    <label for="csv_file">Select CSV File:</label>
+    <input type="file" name="csv_file" accept=".csv" required />
+    <button type="submit">Upload CSV</button>
+  </form>
+
+
+  <hr aria-hidden="true" />
+
+  <div class="status-button" style="pointer-events: none; background-color: #2a7de1;" aria-hidden="true">
+  Check Employee Task Status
+  </div>
+  <div style="margin-top: 30px; display: flex; justify-content: space-between; gap: 12px;">
+  <button class="status-button" style="flex: 1;" onclick="window.location.href='/team-status/it'">
+    IT
+  </button>
+  <button class="status-button" style="flex: 1;" onclick="window.location.href='/team-status/security'">
+    Security
+  </button>
+  <button class="status-button" style="flex: 1;" onclick="window.location.href='/team-status/hr'">
+    HR
+  </button>
+  <button class="status-button" style="flex: 1;" onclick="window.location.href='/team-status/transport'">
+    Transport
+  </button>
+</div>
+
+  <hr aria-hidden="true" /> 
+  <div class="portal-buttons">
+  {% if session.get('role') == 'admin' %}
+    <button class="status-button" onclick="window.location.href='/onboarding/admin-dashboard'">
+      Admin Dashboard
+    </button>
+  {% elif session.get('role') == 'manager' %}
+    <button class="status-button" onclick="window.location.href='/onboarding/manager-view'">
+      Manager Dashboard
+    </button>
+  {% endif %}
+
+  <button class="status-button" onclick="window.location.href='/onboarding/employee-view'">
+    Employee Portal
+  </button>
+
+  <button class="feedback-button" onclick="window.location.href='/onboarding/feedback'">
+    💬 Submit Feedback
+  </button>
+</div>
+</div>
+  </main>
+
+<script>
+  function handleFormSubmit(event) {
+    const btn = document.getElementById('onboardBtn');
+    btn.disabled = true;
+    btn.setAttribute('aria-busy', 'true');
+    btn.innerHTML = 'Submitting... <span class="spinner" aria-hidden="true"></span>';
+  }
+  document.getElementById('onboardBtn').closest('form').addEventListener('submit', handleFormSubmit);
+
+  // Optional: Remove any old error/success messages on page load if needed
+  window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('onboarding')) {
+      history.replaceState(null, '', location.pathname); // Clear URL params
+    }
+  };
+</script>
+
+<script src="{{ url_for('static', filename='darkmode.js') }}"></script>
+</body>
+</html>

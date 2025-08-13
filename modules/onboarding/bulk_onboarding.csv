@@ -1,0 +1,4 @@
+first_name,last_name,tentative_start_date,shift,location,employee_personal_email,employee_company_email,laptop_id,asset_tag,manager_vaco_id,manager_email,project_name,hr_poc,job_title
+Alice,Johnson,2025-06-01,S1,Bangalore,alice.johnson@example.com,alice.johnson@company.com,LAP101,AST789,MGR101,manager1@company.com,Project Alpha,hr1@company.com,Software Engineer
+Bob,Smith,2025-06-03,S2,Hyderabad,bob.smith@example.com,bob.smith@company.com,LAP102,AST790,MGR102,manager2@company.com,Project Beta,hr2@company.com,Data Analyst
+Charlie,Davis,2025-06-05,S3,Pune,charlie.davis@example.com,charlie.davis@company.com,LAP103,AST791,MGR103,manager3@company.com,Project Gamma,hr3@company.com,System Administrator

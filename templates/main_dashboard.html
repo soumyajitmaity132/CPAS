@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - CPAS</title>
+    <style>
+        body {
+            display: flex;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            height: 100vh;
+            padding-top: 30px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar button {
+            width: 90%;
+            margin: 10px auto;
+            padding: 12px 20px;
+            background-color: #34495e;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            display: block;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .sidebar button:disabled {
+            background-color: #7f8c8d;
+            cursor: not-allowed;
+        }
+
+        .sidebar button:hover:enabled {
+            background-color: #1abc9c;
+        }
+
+        .content {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .disabled-button {
+            background-color: #7f8c8d !important;
+            cursor: not-allowed !important;
+            pointer-events: auto !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>CPAS Dashboard</h2>
+        <button id="onboardingBtn">Onboarding</button>
+        <button id="offboardingBtn">Offboarding</button>
+        <button id="recruitmentBtn">Recruitment</button>
+        <button id="referralBtn">Referrals</button>
+    </div>
+
+    <div style="position: absolute; top: 20px; right: 20px;">
+        <a href="{{ url_for('logout') }}" style="
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        ">Logout</a>
+    </div>
+
+    <div class="content">
+        <h1>Welcome to the Dashboard</h1>
+        <p>Select an option from the sidebar.</p>
+    </div>
+
+    <script>
+        const userRole = {{ role | tojson | safe }};
+
+        const onboardingBtn = document.getElementById('onboardingBtn');
+        const offboardingBtn = document.getElementById('offboardingBtn');
+        const recruitmentBtn = document.getElementById('recruitmentBtn');
+        const referralBtn = document.getElementById('referralBtn');
+
+        const permissions = {
+            onboardingBtn: { view: false, edit: false },
+            offboardingBtn: { view: false, edit: false },
+            recruitmentBtn: { view: false, edit: false },
+            referralBtn: { view: false, edit: false }
+        };
+
+        if (userRole === 'admin') {
+            for (let key in permissions) {
+                permissions[key] = { view: true, edit: true };
+            }
+        } else if (userRole === 'hr') {
+            permissions.onboardingBtn = { view: true, edit: true };
+            permissions.offboardingBtn = { view: true, edit: true };
+            permissions.recruitmentBtn = { view: true, edit: true };
+            permissions.referralBtn = { view: true, edit: true };
+        } else if (userRole === 'manager') {
+            permissions.onboardingBtn = { view: true, edit: true };
+            permissions.offboardingBtn = { view: true, edit: true };
+            permissions.recruitmentBtn = { view: true, edit: false };
+            permissions.referralBtn = { view: true, edit: true };
+        } else if (userRole === 'recruitmentteam') {
+            permissions.onboardingBtn = { view: true, edit: false };
+            permissions.recruitmentBtn = { view: true, edit: true };
+            permissions.offboardingBtn = { view: true, edit: true };
+            permissions.referralBtn = { view: true, edit: true };
+        } else if (userRole === 'employee') {
+            permissions.onboardingBtn = { view: true, edit: false };
+            permissions.recruitmentBtn = { view: true, edit: false };
+            permissions.offboardingBtn = { view: true, edit: true };
+            permissions.referralBtn = { view: true, edit: true };
+        }
+
+        function applyPermission(button, perm) {
+            if (!perm.view) {
+                button.style.display = 'none';
+                return;
+            }
+
+            if (!perm.edit) {
+                button.classList.add('disabled-button');
+                button.dataset.authorized = "false";
+            } else {
+                button.dataset.authorized = "true";
+            }
+        }
+
+        applyPermission(onboardingBtn, permissions.onboardingBtn);
+        applyPermission(offboardingBtn, permissions.offboardingBtn);
+        applyPermission(recruitmentBtn, permissions.recruitmentBtn);
+        applyPermission(referralBtn, permissions.referralBtn);
+
+        function handleClick(button, action) {
+            button?.addEventListener('click', () => {
+                if (button.dataset.authorized === "false") {
+                    alert("You are not authorized for this operation.");
+                    return;
+                }
+                action();
+            });
+        }
+        
+        //handleClick(onboardingBtn, () => window.open("http://127.0.0.1:5001/", "_blank"));
+        handleClick(onboardingBtn, () => window.open("/onboarding/", "_blank"));
+        handleClick(offboardingBtn, () => alert("Navigating to Offboarding..."));
+        handleClick(recruitmentBtn, () => alert("Navigating to Recruitment..."));
+        handleClick(referralBtn, () => alert("Navigating to Referrals..."));
+    </script>
+
+
+</body>
+</html>
+
+
